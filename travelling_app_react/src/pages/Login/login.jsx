@@ -1,86 +1,152 @@
 import { useState } from 'react';
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/login.css';
-import loginFrontImage from '../../assets/images/login_front.png';
-import { Button, Typography, TextField, Divider, Chip, Box, Alert } from '@mui/material';
-import { Google } from '@mui/icons-material';
+import { Typography, TextField, Divider, Chip, Box, Alert, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@mui/material';
+import { Google, Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import RediectOption from '../../component/LoginSignupCommon/RediectOption';
+import ImageDisplay from '../../component/LoginSignupCommon/ImageDisplay';
+import FrontText from '../../component/LoginSignupCommon/FrontText';
+
+import { Formik, Form, ErrorMessage, Field } from "formik";
+import * as Yup from "yup";
+import { Navigate } from 'react-router-dom';
+
+// Validation Schema using Yup
+const validationSchema = Yup.object({
+    username: Yup.string()
+        .test("is-email-or-phone", "Enter a valid email or phone number", (value) => {
+            if (!value) return false; // Ensure value exists
+            const emailRegex = /\S+@\S+\.\S+/; // Basic email regex
+            const phoneRegex = /^[0-9]{10}$/; // Allows only 10-digit numbers for phone numbers
+            return emailRegex.test(value) || phoneRegex.test(value); // Valid if it matches either
+        })
+        .required("Email or phone number is required"),
+
+    password: Yup.string().min(8, "Password must be at least 8 characters")
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&])[A-Za-z\d@$#!%*?&]{8,}$/, "Password must have upper, lower, num, and special char.")
+        .required("Password is required"),
+});
 
 function Login() {
     const [error, setError] = useState({});
-    const [userInfo, setUserInfo] = useState({});
     const [alertView, setAlertView] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     axios.defaults.withCredentials = true;
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUserInfo((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const handleLogin = () => {
-        axios.post("http://localhost:3000/user/login", userInfo)
-            .then((response) => console.log("Response:", response))
+    const handleLogin = (values, { setSubmitting, setErrors }) => {
+        axios.post("http://localhost:3000/user/login", values)
+            .then((response) => <Navigate to={'/search'} />)
             .catch((err) => {
-                if (err.status == 403) {
+                if (err.status === 403) {
                     if (err.response.data[0]) {
-                        setError({ path: err.response.data[0]?.path, msg: err.response.data[0]?.msg })
+                        setError({ path: err.response.data[0]?.path, msg: err.response.data[0]?.msg });
+                        setErrors({ [err.response.data[0].path]: err.response.data[0].msg });
                     } else {
                         setAlertView(true);
                         setError({ path: "account-lock", msg: err.response.data?.msg })
                     }
                     console.log(err.response.data);
                 }
-            })
-    }
+                console.log("Error:", err);
+            }).finally(() => {
+                setSubmitting(false);
+            });
+    };
 
     return (
         <>
             {
-                error && error.path == "account-lock" && alertView &&
+                error && error.path === "account-lock" && alertView &&
                 <Alert id='alert' severity="warning" onClose={() => { setAlertView(false) }}>
                     {error.msg.split(".")[0]} <br />
                     {error.msg.split(".")[1]}
                 </Alert>
             }
             <div id="login-component">
-                <div id="image-component">
-                    <h1 className='image-title'>Travelista Tours <br />
-                        <p className='image-sub-title'> Travel is the only purchase that enriches you in ways <br />
-                            beyond material wealth</p></h1>
-                </div>
-                <img src={loginFrontImage} alt="login front image" id='login-front' />
+                <ImageDisplay />
                 <div id="login-input">
-                    <Typography variant='h3' color='primary' sx={{
-                        fontFamily: "PT Sans Narrow, serif",
-                        fontWeight: 'bold',
-                        fontStyle: 'italic',
-                    }}>Welcome</Typography>
-                    <Typography color='grey' variant='p' sx={{
-                        fontFamily: "PT Sans Narrow, serif",
-                    }}>Login with Email</Typography>
-                    <TextField label="Email or Phone number" name='username' variant="outlined" fullWidth margin="normal" onChange={(e) => handleChange(e)} />
-                    <p className='error-msg'>{error && error?.path == 'username' ? error.msg : ''}</p>
-                    <TextField label="Password" name='password' variant="outlined" fullWidth margin="normal" onChange={(e) => handleChange(e)} />
-                    <p className='error-msg'>{error && error?.path == 'password' ? error.msg : ''}</p>
-                    <Typography color='grey' variant='p' sx={{
-                        fontFamily: "PT Sans Narrow, serif",
-                    }}>forgot yout password?</Typography>
-                    <Button variant="contained" color="primary" sx={{ margin: '1rem' }} onClick={handleLogin}> Login</Button>
-                    <Typography color='black' variant='p' sx={{
-                        fontFamily: "PT Sans Narrow, serif",
-                    }}>Don't have account, <Link to={"/register"}><u> Register here</u></Link></Typography>
+                    <FrontText isLogin={true} />
+
+                    <Formik
+                        initialValues={{ username: "", password: "" }}
+                        validationSchema={validationSchema}
+                        onSubmit={handleLogin}
+                    >
+                        {({ values, handleChange, handleBlur, touched, errors, handleSubmit, isSubmitting }) => (
+                            <Form>
+                                {/* Username Field (Email or Phone Number) */}
+                                <Field
+                                    as={TextField}
+                                    label="Email or Phone number"
+                                    name="username"
+                                    variant="outlined"
+                                    fullWidth
+                                    margin="normal"
+                                    value={values.username}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={touched.username && Boolean(errors.username)}
+                                    helperText={touched.username && errors.username} // Display error message directly in TextField
+                                />
+                                <ErrorMessage name="username" component="div" className="error-msg" />
+
+                                {/* Password Field */}
+                                <Field
+                                    as={FormControl}
+                                    sx={{ m: 1, ml: 0.3 }}
+                                    variant="outlined"
+                                    fullWidth
+                                    error={touched.password && Boolean(errors.password)}
+                                >
+                                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        name="password"
+                                        value={values.password}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.password && Boolean(errors.password)}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label={showPassword ? 'hide the password' : 'display the password'}
+                                                    onClick={handleClickShowPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Password"
+                                    />
+                                    <ErrorMessage name="password" component="div" className="error-msg password" />
+                                </Field>
+
+                                <Typography color='grey' variant='p' sx={{ fontFamily: "PT Sans Narrow, serif" }}>
+                                    Forgot your password?
+                                </Typography>
+
+                                <RediectOption isLogin={true} handleFun={handleSubmit} isSubmitting={isSubmitting} />
+                            </Form>
+                        )}
+                    </Formik>
+
                     <Divider sx={{ width: '60%', height: '1px', backgroundColor: 'grey', alignItems: 'center', marginTop: '1rem' }}>
-                        <Typography backgroundColor="white" padding={"6px"}> OR</Typography>
+                        <Typography backgroundColor="white" padding={"6px"}>OR</Typography>
                     </Divider>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
                         <Chip
-                            label="Login with OTP" size="medium" sx={{ marginTop: '1rem', color: '#019ee3', marginRight: '1rem' }}
+                            label="Login with OTP"
+                            size="medium"
+                            sx={{ marginTop: '1rem', color: '#019ee3', marginRight: '1rem' }}
                         />
                         <Google sx={{ marginTop: '.5rem', color: '#019ee3' }} />
                     </Box>
+
                 </div>
             </div>
         </>
@@ -88,3 +154,4 @@ function Login() {
 }
 
 export default Login;
+
