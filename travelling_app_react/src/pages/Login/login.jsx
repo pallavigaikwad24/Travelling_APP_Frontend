@@ -6,10 +6,11 @@ import axios from "axios";
 import RediectOption from '../../component/LoginSignupCommon/RediectOption';
 import ImageDisplay from '../../component/LoginSignupCommon/ImageDisplay';
 import FrontText from '../../component/LoginSignupCommon/FrontText';
-
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import { Navigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { hideAlert, showAlert, showError, showPassword } from '../../redux/features/auth/loginSlice'
 
 // Validation Schema using Yup
 const validationSchema = Yup.object({
@@ -28,24 +29,26 @@ const validationSchema = Yup.object({
 });
 
 function Login() {
-    const [error, setError] = useState({});
-    const [alertView, setAlertView] = useState(false);
+    // const [error, setError] = useState({});
+    const error = useSelector((state) => state.login.error);
+    const alertView = useSelector((state) => state.login.alertView);
+    // const [alertView, setAlertView] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
     axios.defaults.withCredentials = true;
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleLogin = (values, { setSubmitting, setErrors }) => {
         axios.post("http://localhost:3000/user/login", values)
-            .then((response) => <Navigate to={'/search'} />)
+            .then(() => <Navigate to={'/search'} />)
             .catch((err) => {
                 if (err.status === 403) {
                     if (err.response.data[0]) {
-                        setError({ path: err.response.data[0]?.path, msg: err.response.data[0]?.msg });
                         setErrors({ [err.response.data[0].path]: err.response.data[0].msg });
                     } else {
-                        setAlertView(true);
-                        setError({ path: "account-lock", msg: err.response.data?.msg })
+                        dispatch(showAlert());
+                        dispatch(showError({ path: "account-lock", msg: err.response.data?.msg }));
                     }
                     console.log(err.response.data);
                 }
@@ -59,7 +62,7 @@ function Login() {
         <>
             {
                 error && error.path === "account-lock" && alertView &&
-                <Alert id='alert' severity="warning" onClose={() => { setAlertView(false) }}>
+                <Alert id='alert' severity="warning" onClose={() => { dispatch(hideAlert()) }}>
                     {error.msg.split(".")[0]} <br />
                     {error.msg.split(".")[1]}
                 </Alert>
@@ -129,7 +132,7 @@ function Login() {
                                     Forgot your password?
                                 </Typography>
 
-                                <RediectOption isLogin={true} handleFun={handleSubmit} isSubmitting={isSubmitting} />
+                                <RediectOption isLogin={true} handleFun={handleSubmit} />
                             </Form>
                         )}
                     </Formik>

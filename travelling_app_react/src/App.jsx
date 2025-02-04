@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/login.jsx';
 import Signup from './pages/signUp/signUp.jsx';
-import Search from './component/SearchComponent/Search.jsx';
+import Search from './pages/Search/Search.jsx';
 
 function App() {
   return (
