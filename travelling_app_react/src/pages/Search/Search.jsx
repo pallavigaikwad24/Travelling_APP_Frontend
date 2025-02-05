@@ -16,7 +16,7 @@ const Search = () => {
     return (
         <div className="search-page">
             {/* Header */}
-            <header>
+            <header className='header-search'>
                 <h1>Travelista Tours</h1>
                 <div className="travel-option">
                     <div className="hotel" onClick={() => handleSelectOption("hotel")}>

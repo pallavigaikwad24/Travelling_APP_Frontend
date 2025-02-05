@@ -8,9 +8,10 @@ import ImageDisplay from '../../component/LoginSignupCommon/ImageDisplay';
 import FrontText from '../../component/LoginSignupCommon/FrontText';
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { hideAlert, showAlert, showError, showPassword } from '../../redux/features/auth/loginSlice'
+import { hideAlert, showAlert, showError } from '../../redux/features/auth/loginSlice';
+import { login } from '../../redux/features/protectedRoute/protectedRouteSlice';
 
 // Validation Schema using Yup
 const validationSchema = Yup.object({
@@ -29,19 +30,21 @@ const validationSchema = Yup.object({
 });
 
 function Login() {
-    // const [error, setError] = useState({});
     const error = useSelector((state) => state.login.error);
     const alertView = useSelector((state) => state.login.alertView);
-    // const [alertView, setAlertView] = useState(false);
+    const url = useSelector((state) => state.backendUrl.url);
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch();
     axios.defaults.withCredentials = true;
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleLogin = (values, { setSubmitting, setErrors }) => {
-        axios.post("http://localhost:3000/user/login", values)
-            .then(() => <Navigate to={'/search'} />)
+        dispatch(login());
+
+        axios.post(`${url}/user/login`, values)
+            .then((response) => { console.log(response); navigate("/home") })
             .catch((err) => {
                 if (err.status === 403) {
                     if (err.response.data[0]) {

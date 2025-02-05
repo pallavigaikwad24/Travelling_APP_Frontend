@@ -3,6 +3,7 @@ import { setFilters, setSearchQuery } from '../../redux/features/searchHotel/sea
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/search.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHotelList, setIsHotelList, setSearchHotelInfo } from '../../redux/features/hotel/hotelSlice';
+import Cards from './Cards';
 
 const HotelSearch = () => {
 
@@ -124,18 +125,18 @@ const HotelSearch = () => {
                     {/* Example Destination Card */}
                     {
                         searchHotelInfo && searchHotelInfo.map((hotel, index) => (
-                            <div className="destination-card" key={index}>
-                                <img src={`${url}/hotelPictures/defaultImg/default_location.png`} alt="Destination" />
-                                <h3>{hotel.country}</h3>
-                                <p>{hotel.name}</p>
-                                <button>
-                                    Explore
-                                </button>
+                            <div key={index} className='search-result'>
+                                <Cards
+                                    image={`${url}/hotelPictures/defaultImg/default_location.png`}
+                                    title={hotel.name}
+                                    description={hotel.country}
+                                    buttonText="Learn More"
+                                />
                             </div>
                         ))
                     }
                 </div>
-            </div>
+            </div >
 
         </>
     );
