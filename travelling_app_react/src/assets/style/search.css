@@ -311,3 +311,15 @@ body {
 .card-button:hover {
     background-color: #2980b9;
 }
+
+.logout{
+    position: absolute;
+    left: 92%;
+    top: 5%;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: rgb(255, 0, 0);
+    font-weight: 400;
+    font-size: 18px;
+    cursor: pointer;
+}

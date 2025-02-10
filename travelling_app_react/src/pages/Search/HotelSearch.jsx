@@ -4,6 +4,7 @@ import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/t
 import { useDispatch, useSelector } from 'react-redux';
 import { setHotelList, setIsHotelList, setSearchHotelInfo } from '../../redux/features/hotel/hotelSlice';
 import Cards from './Cards';
+import { useNavigate } from "react-router-dom";
 
 const HotelSearch = () => {
 
@@ -14,6 +15,8 @@ const HotelSearch = () => {
     const searchHotelInfo = useSelector((state) => state.hotel.searchHotelInfo);
     const dispatch = useDispatch();
     const url = useSelector((state) => state.backendUrl.url);
+    const navigate = useNavigate();
+    const today = new Date().toISOString().split('T')[0];
 
     const handleSearchChange = (e) => {
         dispatch(setSearchQuery(e.target.value));
@@ -44,11 +47,14 @@ const HotelSearch = () => {
             .then((response) => {
                 dispatch(setSearchHotelInfo(response.data));
             })
-            .catch((err) => console.log(err))
-
-
-
+            .catch((err) => console.log(err));
     };
+
+    const handleSingleView = (id, info) => {
+        console.log("Hotel Id:", id);
+
+        navigate(`/hotelname/${id}`, { state: { info } });
+    }
 
 
     return (
@@ -96,6 +102,7 @@ const HotelSearch = () => {
                             type="date"
                             value={filters.date}
                             onChange={(e) => dispatch(setFilters({ ...filters, startDate: e.target.value }))}
+                            min={today}
                         />
                     </div>
                     <div className="filter date">
@@ -103,6 +110,7 @@ const HotelSearch = () => {
                             type="date"
                             value={filters.date}
                             onChange={(e) => dispatch(setFilters({ ...filters, endDate: e.target.value }))}
+                            min={today}
                         />
                     </div>
                     <div className="filter users">
@@ -112,6 +120,7 @@ const HotelSearch = () => {
                             placeholder="Travelers"
                             value={filters.travelers}
                             onChange={(e) => dispatch(setFilters({ ...filters, travelers: e.target.value }))}
+                            min={1}
                         />
                     </div>
                     <button type="submit" onClick={handleSearch}> Search</button>
@@ -125,7 +134,7 @@ const HotelSearch = () => {
                     {/* Example Destination Card */}
                     {
                         searchHotelInfo && searchHotelInfo.map((hotel, index) => (
-                            <div key={index} className='search-result'>
+                            <div key={index} className='search-result' onClick={() => handleSingleView(hotel.id, filters)}>
                                 <Cards
                                     image={`${url}/hotelPictures/defaultImg/default_location.png`}
                                     title={hotel.name}

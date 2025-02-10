@@ -3,14 +3,24 @@ import HotelSearch from './HotelSearch';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsOptionSelect } from '../../redux/features/searchHotel/searchHotelSlice';
 import FlightSearch from './FlightSearch';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../redux/features/protectedRoute/protectedRouteSlice';
 
 const Search = () => {
 
     const isOptionSelect = useSelector((state) => state.searchHotel.isOptionSelect);
     const dispatch = useDispatch();
-
+    const url = useSelector((state) => state.backendUrl.url);
+    const navigate = useNavigate();
+    
     const handleSelectOption = (name) => {
         dispatch(setIsOptionSelect(name))
+    }
+
+    const handleLogout = () => {
+        axios.get(`${url}/user/logout`).then(() => navigate("/login")).catch((err) => console.log(err));
+        dispatch(logout());
     }
 
     return (
@@ -18,6 +28,7 @@ const Search = () => {
             {/* Header */}
             <header className='header-search'>
                 <h1>Travelista Tours</h1>
+                <div className='logout' onClick={handleLogout}>Logout</div>
                 <div className="travel-option">
                     <div className="hotel" onClick={() => handleSelectOption("hotel")}>
                         <i className="fa-solid fa-hotel" name="hotel"></i>
