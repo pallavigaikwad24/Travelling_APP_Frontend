@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/login.css';
-import { Typography, TextField, Divider, Chip, Box, Alert, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@mui/material';
+import { Typography, TextField, Divider, Chip, Box, Alert, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, circularProgressClasses } from '@mui/material';
 import { Google, Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from "axios";
 import RediectOption from '../../component/LoginSignupCommon/RediectOption';
@@ -41,10 +41,9 @@ function Login() {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleLogin = (values, { setSubmitting, setErrors }) => {
-        dispatch(login());
-
+        console.log("Values:", values);
         axios.post(`${url}/user/login`, values)
-            .then((response) => { console.log(response); navigate("/home") })
+            .then((response) => { dispatch(login(values.username)); console.log(response); navigate("/home") })
             .catch((err) => {
                 if (err.status === 403) {
                     if (err.response.data[0]) {
