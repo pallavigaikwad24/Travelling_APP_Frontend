@@ -1,7 +1,7 @@
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/search.css';
 import HotelSearch from './HotelSearch';
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsOptionSelect } from '../../redux/features/searchHotel/searchHotelSlice';
+import { setIsOptionSelect } from '../../redux/features/search/searchHotelSlice';
 import FlightSearch from './FlightSearch';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';

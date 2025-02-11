@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setFilters, setSearchQuery } from '../../redux/features/searchHotel/searchHotelSlice';
+import { setFilters, setSearchQuery } from '../../redux/features/search/searchHotelSlice';
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/search.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHotelList, setIsHotelList, setSearchHotelInfo } from '../../redux/features/hotel/hotelSlice';

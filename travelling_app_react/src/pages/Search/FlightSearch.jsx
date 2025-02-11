@@ -1,52 +1,84 @@
 import axios from 'axios';
-import { setFilters, setSearchQuery } from '../../redux/features/searchHotel/searchHotelSlice';
+import { setFilters, setSearchQueryDestination, setSearchQueryDeparture } from '../../redux/features/search/searchFlightSlice';
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/search.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHotelList, setIsHotelList, setSearchHotelInfo } from '../../redux/features/hotel/hotelSlice';
+import { setflightList, setIsflightList, setIsflightListTrue, setSearchflightInfo } from '../../redux/features/flight/flightSlice';
+import { useState } from 'react';
 
 const FlightSearch = () => {
-
-    const searchQuery = useSelector((state) => state.searchHotel.searchQuery);
-    const filters = useSelector((state) => state.searchHotel.filters);
-    const hotels = useSelector((state) => state.hotel.hotelList);
-    const isHotelList = useSelector((state) => state.hotel.isHotelList);
-    const searchFlightInfo = useSelector((state) => state.hotel.searchFlightInfo);
+    const filters = useSelector((state) => state?.searchFlight?.filters);
+    const flights = useSelector((state) => state?.flight?.flightList);
+    const isflightList = useSelector((state) => state.flight.isflightList);
+    const searchFlightInfo = useSelector((state) => state.flight.searchflightInfo);
     const dispatch = useDispatch();
     const url = useSelector((state) => state.backendUrl.url);
+    const today = new Date().toISOString().split('T')[0];
+    const searchQueryDeparture = useSelector((state) => state.searchFlight.searchQueryDeparture);
+    const searchQueryDestination = useSelector((state) => state.searchFlight.searchQueryDestination);
+    const [showDepartureList, setShowDepartureList] = useState(false);
+    const [showDestinationList, setShowDestinationList] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handleSearchChange = (e) => {
-        dispatch(setSearchQuery(e.target.value));
+    const handleDepartureSearchChange = (e) => {
+        setShowDepartureList(true);
+        setShowDestinationList(false);
+        dispatch(setIsflightListTrue());
 
-        axios.post(`${url}/search/hotel-list`, { name: e.target.value })
+        dispatch(setSearchQueryDeparture(e.target.value));
+        dispatch(setFilters({ ...filters, departure_airport: e.target.value }));
+
+        axios.post(`${url}/search/flight-list`, { name: e.target.value })
             .then((response) => {
-                console.log(response.data);
-                dispatch(setHotelList(response.data));
+                dispatch(setflightList(response.data));
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log("Error 33:", err));
+    }
+    const handleDestinationSearchChange = (e) => {
+        setShowDestinationList(true);
+        setShowDepartureList(false);
+        dispatch(setIsflightListTrue());
+
+        dispatch(setSearchQueryDestination(e.target.value));
+        dispatch(setFilters({ ...filters, destination_airport: e.target.value }));
+
+        axios.post(`${url}/search/flight-list`, { name: e.target.value })
+            .then((response) => {
+                dispatch(setflightList(response.data));
+            })
+            .catch((err) => console.log("Error 47:", err));
     }
 
-    const handleHotelList = (name, location, country) => {
-        dispatch(setSearchQuery(`${name}, ${location}, ${country}`));
-        dispatch(setFilters({ ...filters, search: location }));
-        dispatch(setIsHotelList());
+    const handleDepartureflightList = (name, city, country, icao_code) => {
+        dispatch(setSearchQueryDeparture(`${name},(${icao_code}) ${city}, ${country}`));
+        dispatch(setFilters({ ...filters, departure_airport: icao_code }));
+        dispatch(setIsflightList());
+    }
+    const handleDestinationflightList = (name, city, country, icao_code) => {
+        dispatch(setSearchQueryDestination(`${name},(${icao_code}) ${city}, ${country}`));
+        dispatch(setFilters({ ...filters, destination_airport: icao_code }));
+        dispatch(setIsflightList());
     }
 
     const handleSearch = (e) => {
+        console.log("Filters:", filters);
         e.preventDefault();
         const obj = {
-            name: filters.search,
+            departure_airport: filters.departure_airport,
+            destination_airport: filters.destination_airport,
             start_date: filters.startDate,
-            end_date: filters.endDate,
-            rooms: filters.travelers
+            total_seats: Number(filters.total_seats)
         }
-        axios.post(`${url}/search/hotels`, obj)
+
+        axios.post(`${url}/search/flights`, obj)
             .then((response) => {
-                dispatch(setSearchHotelInfo(response.data));
+                setError(null);
+                dispatch(setSearchflightInfo(response.data));
             })
-            .catch((err) => console.log(err))
-
-
-
+            .catch((err) => {
+                if (err.status == 403) {
+                    setError(err.response.data[0].msg);
+                }
+            })
     };
 
 
@@ -61,30 +93,31 @@ const FlightSearch = () => {
                             type="text"
                             name='search'
                             placeholder="Departure Airport"
-                            value={searchQuery}
-                            onChange={(e) => handleSearchChange(e)}
+                            value={searchQueryDeparture}
+                            onChange={(e) => handleDepartureSearchChange(e)}
                         />
                         {
-                            hotels && isHotelList &&
-                            <div className="location-options">
-                                <div className="option-card">
-                                    {
-                                        hotels && hotels.map((hotel, index) => (
-                                            <div className="search-option" key={index}
-                                                onClick={() => handleHotelList(hotel.name, hotel.location.split(",")[0], hotel.country)}>
-                                                <i className="fa-solid fa-location-dot"></i>
-                                                <div className="text">
-                                                    <div className="location">{hotel.name}</div>
-                                                    <div className="country">{`${hotel.location.split(",")[0]}, ${hotel.country}`}</div>
+                            flights && showDepartureList && isflightList && (
+                                <div className="location-options">
+                                    <div className="option-card">
+                                        {
+                                            flights && flights.map((flight, index) => (
+                                                <div className="search-option" key={index}
+                                                    onClick={() => handleDepartureflightList(flight.name, flight.city, flight.country, flight.icao_code)}>
+                                                    <i className="fa-solid fa-location-dot"></i>
+                                                    <div className="text">
+                                                        <div className="location">{`${flight.name}, (${flight.icao_code})`}</div>
+                                                        <div className="country">{`${flight.city}, ${flight.country}`}</div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))
-                                    }
+                                            ))
+                                        }
+                                    </div>
                                 </div>
-                            </div>
+                            )
                         }
                     </div>
-                </form>
+                </form >
                 <form className="search-bar flight">
                     <div className="search-bar-div">
                         <i className="fa-solid fa-magnifying-glass"></i>
@@ -92,27 +125,28 @@ const FlightSearch = () => {
                             type="text"
                             name='search'
                             placeholder="Destination Airport"
-                            value={searchQuery}
-                            onChange={(e) => handleSearchChange(e)}
+                            value={searchQueryDestination}
+                            onChange={(e) => handleDestinationSearchChange(e)}
                         />
                         {
-                            hotels && isHotelList &&
-                            <div className="location-options">
-                                <div className="option-card">
-                                    {
-                                        hotels && hotels.map((hotel, index) => (
-                                            <div className="search-option" key={index}
-                                                onClick={() => handleHotelList(hotel.name, hotel.location.split(",")[0], hotel.country)}>
-                                                <i className="fa-solid fa-location-dot"></i>
-                                                <div className="text">
-                                                    <div className="location">{hotel.name}</div>
-                                                    <div className="country">{`${hotel.location.split(",")[0]}, ${hotel.country}`}</div>
+                            flights && showDestinationList && isflightList && (
+                                <div className="location-options">
+                                    <div className="option-card">
+                                        {
+                                            flights && flights.map((flight, index) => (
+                                                <div className="search-option" key={index}
+                                                    onClick={() => handleDestinationflightList(flight.name, flight.city, flight.country, flight.icao_code)}>
+                                                    <i className="fa-solid fa-location-dot"></i>
+                                                    <div className="text">
+                                                        <div className="location">{`${flight.name}, (${flight.icao_code})`}</div>
+                                                        <div className="country">{`${flight.city}, ${flight.country}`}</div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))
-                                    }
+                                            ))
+                                        }
+                                    </div>
                                 </div>
-                            </div>
+                            )
                         }
                     </div>
                 </form>
@@ -123,8 +157,9 @@ const FlightSearch = () => {
                     <div className="filter date">
                         <input
                             type="date"
-                            value={filters.date}
+                            value={filters?.startDate}
                             onChange={(e) => dispatch(setFilters({ ...filters, startDate: e.target.value }))}
+                            min={today}
                         />
                     </div>
                     <div className="filter users">
@@ -132,27 +167,40 @@ const FlightSearch = () => {
                         <input
                             type="number"
                             placeholder="Travelers"
-                            value={filters.travelers}
-                            onChange={(e) => dispatch(setFilters({ ...filters, travelers: e.target.value }))}
+                            value={filters?.total_seats}
+                            onChange={(e) => dispatch(setFilters({ ...filters, total_seats: e.target.value }))}
+                            min={1}
                         />
                     </div>
                     <button type="submit" onClick={handleSearch}> Search</button>
                 </div>
-            </div>
+            </div >
 
             {/* Destination List */}
             <div className="destination-list">
-                <h2>Popular Destinations</h2>
+                {
+                    error ? <h2 style={{ "color": "red" }}>{error}</h2> : <h2>Flights</h2>
+                }
+
                 <div className="destinations">
                     {/* Example Destination Card */}
-                    <div className="destination-card">
-                        <img src={`${url}/hotelPictures/defaultImg/default_location.png`} alt="Destination" />
-                        <h3>Flight Name</h3>
-                        <p>Time</p>
-                        <button>
-                            Explore
-                        </button>
-                    </div>
+                    {
+                        searchFlightInfo && searchFlightInfo.map((flight, index) => (
+                            <div className="destination-card" key={index}>
+                                <div className="card-header">
+                                    <h3>{flight.airline}</h3>
+                                </div>
+                                <div className="card-body">
+                                    <p><strong>✈️ Airline:</strong> {flight.airline}</p>
+                                    <p><strong>📍 Departure:</strong> {flight.departure_airport}</p>
+                                    <p><strong>📍 Arrival:</strong> {flight.arrival_airport}</p>
+                                    <p><strong>📅 Date:</strong> {flight.departure_date}</p>
+                                    <p><strong>⏰ Time:</strong> {flight.departure_time}</p>
+                                    <p className="price"><strong>💰 Price:</strong> ${flight.price}</p>
+                                </div>
+                            </div>
+                        ))
+                    }
 
                 </div>
             </div>

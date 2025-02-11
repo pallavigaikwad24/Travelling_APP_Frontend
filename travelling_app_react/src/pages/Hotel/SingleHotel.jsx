@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHotelInfo } from '../../redux/features/hotel/hotelSlice';
 import { useEffect } from 'react';
+import Payment from '../Payment_gateway/Payment';
 
 const SingleHotel = () => {
   const { id } = useParams();
@@ -45,8 +46,6 @@ const SingleHotel = () => {
                 </div>
               ))
             }
-            {/* <img src={hotelInfo.images[1]} alt="Hotel secondary view" />
-            <img src={hotelInfo.images[2]} alt="Hotel tertiary view" /> */}
           </div>
 
           <div className="content-grid">
@@ -97,8 +96,7 @@ const SingleHotel = () => {
                     <option>{info.travelers} Guest</option>
                   </select>
                 </div>
-
-                <button className="book-button">Book Now</button>
+                <Payment amount={hotelInfo.price_per_night * info.travelers} hotel_id={hotelInfo.id} check_in_date={info.startDate} check_out_date={info.endDate} number_of_rooms={info.travelers} />
                 <p className="disclaimer">You won't be charged yet</p>
               </div>
             </div>
