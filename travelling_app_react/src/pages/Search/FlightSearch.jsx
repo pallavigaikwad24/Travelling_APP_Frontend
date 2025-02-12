@@ -4,6 +4,7 @@ import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/t
 import { useDispatch, useSelector } from 'react-redux';
 import { setflightList, setIsflightList, setIsflightListTrue, setSearchflightInfo } from '../../redux/features/flight/flightSlice';
 import { useState } from 'react';
+import FlightCard from './FlightCard.jsx';
 
 const FlightSearch = () => {
     const filters = useSelector((state) => state?.searchFlight?.filters);
@@ -31,7 +32,10 @@ const FlightSearch = () => {
             .then((response) => {
                 dispatch(setflightList(response.data));
             })
-            .catch((err) => console.log("Error 33:", err));
+            .catch((err) => {
+                console.log(err);
+                if (err.status == 401) localStorage.removeItem("user_login");
+            });
     }
     const handleDestinationSearchChange = (e) => {
         setShowDestinationList(true);
@@ -45,7 +49,10 @@ const FlightSearch = () => {
             .then((response) => {
                 dispatch(setflightList(response.data));
             })
-            .catch((err) => console.log("Error 47:", err));
+            .catch((err) => {
+                console.log(err);
+                if (err.status == 401) localStorage.removeItem("user_login");
+            });
     }
 
     const handleDepartureflightList = (name, city, country, icao_code) => {
@@ -60,7 +67,7 @@ const FlightSearch = () => {
     }
 
     const handleSearch = (e) => {
-        console.log("Filters:", filters);
+
         e.preventDefault();
         const obj = {
             departure_airport: filters.departure_airport,
@@ -184,24 +191,14 @@ const FlightSearch = () => {
 
                 <div className="destinations">
                     {/* Example Destination Card */}
+                    {console.log("searchFlightInfo:", searchFlightInfo)}
                     {
                         searchFlightInfo && searchFlightInfo.map((flight, index) => (
-                            <div className="destination-card" key={index}>
-                                <div className="card-header">
-                                    <h3>{flight.airline}</h3>
-                                </div>
-                                <div className="card-body">
-                                    <p><strong>✈️ Airline:</strong> {flight.airline}</p>
-                                    <p><strong>📍 Departure:</strong> {flight.departure_airport}</p>
-                                    <p><strong>📍 Arrival:</strong> {flight.arrival_airport}</p>
-                                    <p><strong>📅 Date:</strong> {flight.departure_date}</p>
-                                    <p><strong>⏰ Time:</strong> {flight.departure_time}</p>
-                                    <p className="price"><strong>💰 Price:</strong> ${flight.price}</p>
-                                </div>
+                            <div key={index}>
+                                <FlightCard flight={flight} seats={filters?.total_seats} />
                             </div>
                         ))
                     }
-
                 </div>
             </div>
 

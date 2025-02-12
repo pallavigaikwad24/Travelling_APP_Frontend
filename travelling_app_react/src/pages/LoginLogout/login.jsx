@@ -10,7 +10,7 @@ import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { hideAlert, showAlert, showError } from '../../redux/features/auth/loginSlice';
+import { hideAlert, setUserInfo, showAlert, showError } from '../../redux/features/auth/loginSlice';
 import { login } from '../../redux/features/protectedRoute/protectedRouteSlice';
 
 // Validation Schema using Yup
@@ -41,9 +41,8 @@ function Login() {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleLogin = (values, { setSubmitting, setErrors }) => {
-        console.log("Values:", values);
         axios.post(`${url}/user/login`, values)
-            .then((response) => { dispatch(login(values.username)); console.log(response); navigate("/home") })
+            .then((response) => { dispatch(login(values.username)); dispatch(setUserInfo(response.data)); navigate("/home") })
             .catch((err) => {
                 if (err.status === 403) {
                     if (err.response.data[0]) {

@@ -251,115 +251,92 @@ body {
     padding-top: 10px;
 }
 
+.optionDiv{
+    display: flex;
+    width: 23%;
+    font-size: 20px;
+    font-weight: 600;
+    justify-content: space-around;
+    position: absolute;
+    top:4rem;
+    right: 10px;
+}
+.logout, .list{
+    padding: 5px 20px;
+    background-color: grey;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.list{
+    background-color: #1976d2;
+}
+
 /* Card Container */
 .card {
-    width: 100%;
+    width: 300px;
+    background: #ffffff;
     border-radius: 10px;
-    /* overflow: hidden; */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #ffffff;
-    height: 0;
+    cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Card Image */
+.card-image-container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .card-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 15px;
+    height: 100%;
+    object-fit: fill;
 }
 
 /* Card Content */
 .card-content {
     padding: 20px;
     text-align: center;
-    background-color: #deddf2;
-    margin-top: -20px;
 }
 
-/* Card Title */
+/* Title */
 .card-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
     margin-bottom: 10px;
-    color: #2c3e50;
 }
 
-/* Card Description */
+/* Description */
 .card-description {
     font-size: 1rem;
     color: #666;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
-/* Card Button */
+/* Button */
 .card-button {
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: #ffffff;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
     border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .card-button:hover {
-    background-color: #2980b9;
-}
-
-.logout {
-    position: absolute;
-    left: 92%;
-    top: 5%;
-    padding: 5px 10px 5px 10px;
-    border-radius: 10px;
-    background-color: rgb(255, 0, 0);
-    font-weight: 400;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-.destination-card {
-    background: linear-gradient(135deg, #6e8efb, #a777e3);
-    border-radius: 10px;
-    padding: 20px;
-    color: #fff;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px;
-    transition: transform 0.3s ease-in-out;
-}
-
-.destination-card:hover {
-    transform: scale(1.05);
-}
-
-.card-header {
-    font-size: 1.4em;
-    font-weight: bold;
-    text-align: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.card-body {
-    padding-top: 10px;
-}
-
-.card-body p {
-    font-size: 1em;
-    margin: 5px 0;
-}
-
-.price {
-    font-size: 1.2em;
-    font-weight: bold;
-    text-align: center;
-    color: #ffd700;
+    background: linear-gradient(135deg, #a777e3, #6e8efb);
 }

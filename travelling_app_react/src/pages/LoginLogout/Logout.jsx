@@ -8,7 +8,10 @@ function Logout() {
     const handleLogout = () => {
         axios.get(`${url}/user/logout`).then(() => {
             dispatch(logout());
-        }).catch((err) => console.log(err));
+        }).catch((err) => {
+            console.log(err);
+            if (err.status == 401) localStorage.removeItem("user_login");
+        });
     }
     return (
         <div>

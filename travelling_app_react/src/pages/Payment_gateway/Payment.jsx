@@ -2,18 +2,23 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
-const Payment = ({ amount, check_in_date, check_out_date, hotel_id, number_of_rooms }) => {
+const Payment = ({ amount, check_in_date, check_out_date, hotel_id, number_of_rooms, btnName, flight_id, number_of_seats, price }) => {
     const [orderInfo, setOrderInfo] = useState(null);
     const url = useSelector((state) => state.backendUrl.url);
 
     useEffect(() => {
         const createOrder = async () => {
             try {
-                const response = await axios.post(`${url}/payment/createOrder`, { amount });
-                console.log("Response 12:", response);
-                setOrderInfo(response.data);
+                axios.post(`${url}/payment/createOrder`, { amount })
+                    .then((response) => setOrderInfo(response.data))
+                    .catch((error) => {
+                        console.error('Error creating order:', error);
+                        if (error.status == 401) localStorage.removeItem("user_login");
+                    })
+
             } catch (error) {
                 console.error('Error creating order:', error);
+                if (error.status == 401) localStorage.removeItem("user_login");
             }
         };
 
@@ -33,9 +38,21 @@ const Payment = ({ amount, check_in_date, check_out_date, hotel_id, number_of_ro
                 alert("Your payment has been successfully processed. A confirmation receipt has been sent to your registered email. If you require any assistance or have any inquiries, please don’t hesitate to contact our support team. ");
                 // alert(response.razorpay_order_id);
                 // alert(response.razorpay_signature);
-                axios.post(`${url}/hotel/hotel-booking`, { check_in_date, check_out_date, hotel_id, number_of_rooms })
-                    .then((response) => console.log("37:", response.data))
-                    .catch((err) => console.log(err));
+                if (btnName == "Book Hotel") {
+                    axios.post(`${url}/hotel/hotel-booking`, { check_in_date, check_out_date, hotel_id, number_of_rooms })
+                        .then((response) => console.log("37:", response.data))
+                        .catch((err) => {
+                            console.log(err);
+                            if (err.status == 401) localStorage.removeItem("user_login");
+                        });
+                } else {
+                    axios.post(`${url}/flight/flight-booking`, { flight_id, number_of_seats, price })
+                        .then((response) => console.log("43:", response.data))
+                        .catch((err) => {
+                            console.log(err);
+                            if (err.status == 401) localStorage.removeItem("user_login");
+                        });
+                }
             },
             prefill: {
                 name: orderInfo.name,
@@ -56,7 +73,7 @@ const Payment = ({ amount, check_in_date, check_out_date, hotel_id, number_of_ro
 
     return (
         <div>
-            <button onClick={handlePayment}>Pay Now</button>
+            <button onClick={handlePayment}>{btnName}</button>
         </div>
     );
 };

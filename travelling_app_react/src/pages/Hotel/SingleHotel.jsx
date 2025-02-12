@@ -17,7 +17,10 @@ const SingleHotel = () => {
   useEffect(() => {
     axios.get(`${url}/hotel/${id}`)
       .then((response) => dispatch(setHotelInfo(response.data)))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err); 
+        if(err.status == 401) localStorage.removeItem("user_login");
+      });
   }, [dispatch, id, url]);
 
   console.log("response:", hotelInfo);
@@ -96,7 +99,7 @@ const SingleHotel = () => {
                     <option>{info.travelers} Guest</option>
                   </select>
                 </div>
-                <Payment amount={hotelInfo.price_per_night * info.travelers} hotel_id={hotelInfo.id} check_in_date={info.startDate} check_out_date={info.endDate} number_of_rooms={info.travelers} />
+                <Payment amount={hotelInfo.price_per_night * info.travelers} hotel_id={hotelInfo.id} check_in_date={info.startDate} check_out_date={info.endDate} number_of_rooms={info.travelers} btnName={"Book Hotel"} />
                 <p className="disclaimer">You won't be charged yet</p>
               </div>
             </div>

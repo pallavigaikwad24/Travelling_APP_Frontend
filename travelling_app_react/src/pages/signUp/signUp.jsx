@@ -7,11 +7,15 @@ import FrontText from "../../component/LoginSignupCommon/FrontText.jsx";
 import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import RediectOption from "../../component/LoginSignupCommon/RediectOption.jsx";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     axios.defaults.withCredentials = true;
+    const url = useSelector((state) => state.backendUrl.url);
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword);
@@ -36,8 +40,8 @@ function Signup() {
     });
 
     const handleSignUp = (values, { setSubmitting, setErrors }) => {
-        axios.post("http://localhost:3000/user/registration", values)
-            .then((response) => console.log("Response:", response))
+        axios.post(`${url}/user/registration`, values)
+            .then((response) => { console.log("Response:", response); navigate("/login") })
             .catch((err) => {
                 console.log("Error", err.response.data);
                 if (err.status == 403) {

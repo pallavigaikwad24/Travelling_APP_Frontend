@@ -4,6 +4,7 @@ const initialState = {
     error: '',
     alertView: false,
     showPassword: false,
+    userInfo: null
 }
 
 const loginSlice = createSlice({
@@ -18,13 +19,15 @@ const loginSlice = createSlice({
         },
         showError: (state, action) => {
             state.error = action.payload;
-            console.log("Action Payload 18:", action);
         },
         showPassword: (state) => {
             state.showPassword = true
+        },
+        setUserInfo: (state, action) => {
+            state.userInfo = action.payload
         }
     }
 });
 
-export const { showAlert, showError, showPassword, hideAlert } = loginSlice.actions;
+export const { showAlert, showError, showPassword, hideAlert, setUserInfo } = loginSlice.actions;
 export default loginSlice.reducer;

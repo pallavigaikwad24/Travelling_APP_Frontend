@@ -5,12 +5,9 @@ import Search from './pages/Search/Search.jsx';
 import Home from './pages/Home/Home.jsx';
 import SingleHotel from './pages/Hotel/SingleHotel.jsx';
 import ProtectedRoute from './component/ProtectedRoute/ProtectedRoute.jsx';
-import { useSelector } from 'react-redux';
+import EmailVerification from './component/EmailVerification/EmailVerification.jsx';
 
 function App() {
-  const isAuth = useSelector((state) => state.protected.isAuthenticated);
-  console.log("isAuth:", isAuth);
-
   return (
     <>
       <Router>
@@ -21,6 +18,7 @@ function App() {
           <Route path="/search" element={<ProtectedRoute element={<Search />} />} />
           <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
           <Route path="/hotelname/:id" element={<ProtectedRoute element={<SingleHotel />} />} />
+          <Route path="/email-verification/:token" element={<ProtectedRoute element={<EmailVerification />} />} />
         </Routes>
       </Router>
     </>
