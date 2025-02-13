@@ -1,10 +1,11 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../../assets/style/singleHotel.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHotelInfo } from '../../redux/features/hotel/hotelSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Payment from '../Payment_gateway/Payment';
+import Review from '../../component/Hotel/Review';
 
 const SingleHotel = () => {
   const { id } = useParams();
@@ -13,15 +14,22 @@ const SingleHotel = () => {
   const url = useSelector((state) => state.backendUrl.url);
   const location = useLocation();
   const { info } = location.state || {};
+  axios.defaults.withCredentials = true;
+
+  const [showAlert, setShowAleart] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get(`${url}/hotel/${id}`)
       .then((response) => dispatch(setHotelInfo(response.data)))
       .catch((err) => {
-        console.log(err); 
-        if(err.status == 401) localStorage.removeItem("user_login");
+        console.log(err);
+        if (err.status == 401) {
+          navigate("/login");
+          localStorage.removeItem("user_login");
+        }
       });
-  }, [dispatch, id, url]);
+  }, [dispatch, id, url, navigate]);
 
   console.log("response:", hotelInfo);
 
@@ -104,6 +112,14 @@ const SingleHotel = () => {
               </div>
             </div>
           </div>
+          {
+            showAlert &&
+            <div className="alert alert-success alert-dismissible fade show mt-4" role="alert">
+              <strong> Thank you for your feedback!.</strong>
+              <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setShowAleart(false)}></button>
+            </div>
+          }
+          <Review setShowAleart={setShowAleart} />
         </div>
       }
     </>

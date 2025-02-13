@@ -1,9 +1,12 @@
+import { useSelector } from "react-redux";
+
 const About = () => {
+    const url = useSelector((state) => state.backendUrl.url);
     return (
-        <div className="about-container">
+        <div className="about-container" id="about">
             <div className="about-hero">
                 <img
-                    src="/api/placeholder/1200/400"
+                    src={`${url}/hotelPictures/defaultImg/home-back.jpg`}
                     alt="Travel Adventures"
                     className="about-hero-image"
                 />

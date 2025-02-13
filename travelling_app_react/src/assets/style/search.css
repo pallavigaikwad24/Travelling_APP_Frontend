@@ -31,6 +31,11 @@ body {
     margin-bottom: 50px;
 }
 
+h1{
+    font-size: 3.5rem;
+     margin-top: 20px;
+}
+
 .travel-option {
     display: flex;
     align-items: center;
@@ -122,7 +127,7 @@ body {
     border: 1px solid #bbbfc5;
     border-radius: 5px;
     /* background: #ffffff; */
-    width: 40%;
+    width: 45%;
 }
 
 .filter input {
@@ -133,7 +138,7 @@ body {
 }
 
 .filter.users input {
-    width: 2rem !important;
+    width: 3.5rem !important;
 }
 
 .filter.date input {
@@ -161,13 +166,14 @@ body {
     width: 90%;
     display: flex;
     flex-direction: column;
+    margin-top: 40px;
 }
 
-.destinations {
+.destinations-search {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -251,23 +257,19 @@ body {
     padding-top: 10px;
 }
 
-.optionDiv{
+.optionDiv {
     display: flex;
     width: 23%;
     font-size: 20px;
     font-weight: 600;
     justify-content: space-around;
     position: absolute;
-    top:4rem;
+    top: 4rem;
     right: 10px;
 }
-.logout, .list{
-    padding: 5px 20px;
-    background-color: grey;
-    border-radius: 10px;
-    cursor: pointer;
-}
-.list{
+
+
+.list {
     background-color: #1976d2;
 }
 
@@ -280,6 +282,7 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    margin-bottom: 0px;
 }
 
 .card:hover {
@@ -299,8 +302,8 @@ body {
 
 .card-image {
     width: 100%;
-    height: 100%;
-    object-fit: fill;
+    height: 200px;
+    object-fit: cover;
 }
 
 /* Card Content */

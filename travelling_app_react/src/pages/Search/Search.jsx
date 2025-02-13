@@ -3,31 +3,21 @@ import HotelSearch from './HotelSearch';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsOptionSelect } from '../../redux/features/search/searchHotelSlice';
 import FlightSearch from './FlightSearch';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../redux/features/protectedRoute/protectedRouteSlice';
 import { useState } from 'react';
 import HotelForm from '../../component/Hotel/HotelForm';
+import Header from '../Home/Header';
 
 const Search = () => {
 
     const isOptionSelect = useSelector((state) => state.searchHotel.isOptionSelect);
     const dispatch = useDispatch();
-    const url = useSelector((state) => state.backendUrl.url);
     const navigate = useNavigate();
     const userInfo = useSelector((state) => state.login.userInfo);
     const [showForm, setShowForm] = useState(false);
 
     const handleSelectOption = (name) => {
         dispatch(setIsOptionSelect(name))
-    }
-
-    const handleLogout = () => {
-        axios.get(`${url}/user/logout`).then(() => navigate("/login")).catch((err) => {
-            console.log(err);
-            if (err.status == 401) localStorage.removeItem("user_login");
-        });
-        dispatch(logout());
     }
 
     const handleList = () => {
@@ -50,14 +40,15 @@ const Search = () => {
     return (
         <div className="search-page">
             {/* Header */}
+            <Header />
             <header className='header-search'>
                 <h1>Travelista Tours</h1>
                 <div className="optionDiv">
-                    {
+                    {/* {
                         isOptionSelect == "hotel" &&
                         <div className='list' onClick={handleList}>List your property</div>
-                    }
-                    <div className='logout' onClick={handleLogout}>Logout</div>
+                    } */}
+                    {/* <div className='logout' onClick={handleLogout}>Logout</div> */}
                 </div>
                 <div className="travel-option">
                     <div className="hotel" onClick={() => handleSelectOption("hotel")}>

@@ -2,9 +2,10 @@ import axios from 'axios';
 import { setFilters, setSearchQuery } from '../../redux/features/search/searchHotelSlice';
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/search.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHotelList, setIsHotelList, setSearchHotelInfo } from '../../redux/features/hotel/hotelSlice';
+import { setAllHotelInfo, setHotelList, setIsHotelList, setSearchHotelInfo } from '../../redux/features/hotel/hotelSlice';
 import Cards from './Cards';
 import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
 
 const HotelSearch = () => {
 
@@ -13,11 +14,29 @@ const HotelSearch = () => {
     const hotels = useSelector((state) => state.hotel.hotelList);
     const isHotelList = useSelector((state) => state.hotel.isHotelList);
     const searchHotelInfo = useSelector((state) => state.hotel.searchHotelInfo);
+    const allHotelInfo = useSelector((state) => state.hotel.allHotelInfo);
     const dispatch = useDispatch();
     const url = useSelector((state) => state.backendUrl.url);
     const userInfo = useSelector((state) => state.login.userInfo);
     const navigate = useNavigate();
     const today = new Date().toISOString().split('T')[0];
+    axios.defaults.withCredentials = true;
+    console.log("userInfo:", localStorage.getItem("user_login"));
+
+    useEffect(() => {
+        axios.get(`${url}/hotel/get-all-hotels`)
+            .then((response) => {
+                console.log("Res 14:", response.data);
+                dispatch(setAllHotelInfo(response.data));
+            })
+            .catch((err) => {
+                console.log(err);
+                if (err.status == 401) {
+                    navigate("/login");
+                    localStorage.removeItem("user_login");
+                }
+            })
+    }, [url, navigate, dispatch])
 
     const handleSearchChange = (e) => {
         dispatch(setSearchQuery(e.target.value));
@@ -60,7 +79,6 @@ const HotelSearch = () => {
     const handleSingleView = (id, info) => {
         navigate(`/hotelname/${id}`, { state: { info } });
     }
-
 
     return (
         <>
@@ -114,7 +132,13 @@ const HotelSearch = () => {
                         <input
                             type="date"
                             value={filters.date}
-                            onChange={(e) => dispatch(setFilters({ ...filters, endDate: e.target.value }))}
+                            onChange={(e) => {
+                                if (e.target.value < filters.startDate) {
+                                    dispatch(setFilters({ ...filters, startDate: e.target.value, endDate: e.target.value }));
+                                } else {
+                                    dispatch(setFilters({ ...filters, endDate: e.target.value }));
+                                }
+                            }}
                             min={today}
                         />
                     </div>
@@ -134,21 +158,30 @@ const HotelSearch = () => {
 
             {/* Destination List */}
             <div className="destination-list">
-                <h2>Popular Destinations</h2>
-                <div className="destinations">
+                <h2 className='dest-title'>Popular Hotels</h2>
+                <div className="destinations-search">
                     {/* Example Destination Card */}
-                    {console.log("searchHotelInfo,", searchHotelInfo)}
                     {
-                        searchHotelInfo && searchHotelInfo.map((hotel, index) => (
+                        searchHotelInfo ? searchHotelInfo.map((hotel, index) => (
                             <div key={index} className='search-result' onClick={() => handleSingleView(hotel.id, filters)}>
                                 <Cards
                                     image={`${url}/hotelPictures/upload/${userInfo?.id}/${hotel.id}/${JSON.parse(hotel.images)[0]}`}
                                     title={hotel.name}
                                     description={hotel.country}
-                                    buttonText="Learn More"
+                                    buttonText="See More"
+                                    rating={hotel?.ReviewHotelModels[0]?.rating}
                                 />
                             </div>
-                        ))
+                        )) : allHotelInfo && allHotelInfo.map((hotel, index) => (
+                            <div key={index} className='search-result' onClick={() => handleSingleView(hotel.id, filters)}>
+                                <Cards
+                                    image={`${url}/hotelPictures/upload/${userInfo?.id}/${hotel.id}/${JSON.parse(hotel.images)[0]}`}
+                                    title={hotel.name}
+                                    description={hotel.country}
+                                    buttonText="See More"
+                                    rating={hotel?.ReviewHotelModels}
+                                />
+                            </div>))
                     }
                 </div>
             </div >

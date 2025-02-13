@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 const Payment = ({ amount, check_in_date, check_out_date, hotel_id, number_of_rooms, btnName, flight_id, number_of_seats, price }) => {
     const [orderInfo, setOrderInfo] = useState(null);
     const url = useSelector((state) => state.backendUrl.url);
+    axios.defaults.withCredentials=true;
 
     useEffect(() => {
         const createOrder = async () => {
