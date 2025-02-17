@@ -1,40 +1,30 @@
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/search.css';
-import HotelSearch from './HotelSearch';
+import HotelSearch from '../../component/HotelComponent/HotelSearch';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsOptionSelect } from '../../redux/features/search/searchHotelSlice';
-import FlightSearch from './FlightSearch';
+import FlightSearch from '../../component/FlightComponent/FlightSearch';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import HotelForm from '../../component/Hotel/HotelForm';
-import Header from '../Home/Header';
+import { useEffect, useState } from 'react';
+import HotelForm from '../../component/HotelComponent/HotelForm';
+import Header from '../../component/HomeComponent/Header';
+import { hideForm, setIsSearchRoute } from '../../redux/features/hotel/hotelSlice';
 
 const Search = () => {
 
-    const isOptionSelect = useSelector((state) => state.searchHotel.isOptionSelect);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const userInfo = useSelector((state) => state.login.userInfo);
-    const [showForm, setShowForm] = useState(false);
+    const showForm = useSelector((state) => state.hotel.showForm);
+    const isOptionSelect = useSelector((state) => state.searchHotel.isOptionSelect);
+
+    useEffect(() => {
+        dispatch(setIsSearchRoute());
+    }, [dispatch])
 
     const handleSelectOption = (name) => {
         dispatch(setIsOptionSelect(name))
     }
 
-    const handleList = () => {
-        console.log("Userinfo:", userInfo);
-        if (!userInfo) {
-            localStorage.removeItem("user_login");
-            navigate("/login");
-        };
-        if (userInfo.user_type != 'admin')
-            navigate("/signup");
-        else {
-            setShowForm(true);
-        }
-    }
-
     const onClse = () => {
-        setShowForm(false)
+        dispatch(hideForm())
     }
 
     return (
@@ -42,13 +32,8 @@ const Search = () => {
             {/* Header */}
             <Header />
             <header className='header-search'>
-                <h1>Travelista Tours</h1>
+                <h1 style={{ fontFamily: "Baskervville SC, serif" }}>Travelista Tours</h1>
                 <div className="optionDiv">
-                    {/* {
-                        isOptionSelect == "hotel" &&
-                        <div className='list' onClick={handleList}>List your property</div>
-                    } */}
-                    {/* <div className='logout' onClick={handleLogout}>Logout</div> */}
                 </div>
                 <div className="travel-option">
                     <div className="hotel" onClick={() => handleSelectOption("hotel")}>
@@ -71,7 +56,7 @@ const Search = () => {
                     <HotelForm onClose={onClse} />
                 </div>
             }
-        </div>
+        </div >
     );
 };
 

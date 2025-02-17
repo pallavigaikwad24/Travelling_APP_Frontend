@@ -63,21 +63,12 @@
 }
 
 .close-btn:hover {
-    color: #dc2626;
+    color: #aaa6a6;
 }
 
 /* Scrollable content area */
 .form-group {
-    padding: 0 40px;
-}
-
-/* First form group needs extra padding from header */
-.form-group:first-of-type {
-    padding-top: 20px;
-}
-
-.form-group {
-    margin-bottom: 24px;
+    padding: 0 30px;
 }
 
 .form-group label {

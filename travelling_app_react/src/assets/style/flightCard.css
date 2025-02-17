@@ -114,6 +114,8 @@
     cursor: pointer;
     padding: 4px 8px;
     transition: color 0.2s;
+    background-color: rgb(241, 224, 224);
+    border-radius: 10px;
 }
 
 .view-details:hover {

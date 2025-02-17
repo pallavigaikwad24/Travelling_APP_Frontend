@@ -1,9 +1,9 @@
-import About from "./About"
-import Contact from "./Contact"
-import Destinations from "./Destinations"
-import Footer from "./Footer"
-import Header from "./Header"
-import Hero from "./Hero"
+import About from "../../component/HomeComponent/About"
+import Contact from "../../component/HomeComponent/Contact"
+import Destinations from "../../component/HomeComponent/Destinations"
+import Footer from "../../component/HomeComponent/Footer"
+import Header from "../../component/HomeComponent/Header"
+import Hero from "../../component/HomeComponent/Hero"
 import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/home.css'
 
 function Home() {

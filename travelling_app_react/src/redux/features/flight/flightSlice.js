@@ -14,6 +14,9 @@ const flightSlice = createSlice({
         setflightList: (state, action) => {
             state.flightList = action.payload
         },
+        removeFlightList: (state) => {
+            state.flightList = null
+        },
         setIsflightList: (state) => {
             state.isflightList = false;
         },
@@ -29,5 +32,5 @@ const flightSlice = createSlice({
     }
 });
 
-export const { setflightList, setIsflightList, setIsflightListTrue, setSearchflightInfo, setflightInfo } = flightSlice.actions;
+export const { setflightList, setIsflightList, setIsflightListTrue, setSearchflightInfo, setflightInfo, removeFlightList } = flightSlice.actions;
 export default flightSlice.reducer;

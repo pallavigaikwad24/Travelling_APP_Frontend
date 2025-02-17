@@ -17,23 +17,23 @@ body {
 
 /* Header */
 .header-search {
-    background-image: url("../images/backgroundImage.jpg");
+    background-image: url("../images/travel-cover.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
     background-color: #5A58A2;
-    color: #ffffff;
+    color: #e2d9e8;
     text-align: center;
     width: 100%;
     font-size: 24px;
     font-weight: bold;
-    height: 50%;
+    /* height: 50%; */
     margin-bottom: 50px;
 }
 
-h1{
+h1 {
     font-size: 3.5rem;
-     margin-top: 20px;
+    margin-top: 20px;
 }
 
 .travel-option {
@@ -173,8 +173,9 @@ h1{
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+
 }
 
 .destination-card {
@@ -241,6 +242,7 @@ h1{
     gap: 10px;
     border-bottom: 2px solid rgb(229, 229, 229);
     padding: 10px 20px 10px 20px;
+
 }
 
 .fa-location-dot {
@@ -264,13 +266,14 @@ h1{
     font-weight: 600;
     justify-content: space-around;
     position: absolute;
-    top: 4rem;
-    right: 10px;
+    top: 1.8rem;
+    right: 12rem;
+    cursor: pointer;
+    z-index: 1;
 }
 
-
 .list {
-    background-color: #1976d2;
+    cursor: pointer;
 }
 
 /* Card Container */
@@ -313,8 +316,8 @@ h1{
 }
 
 /* Title */
-.card-title {
-    font-size: 1.4rem;
+.card-title-search {
+    font-size: 1.2rem;
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;

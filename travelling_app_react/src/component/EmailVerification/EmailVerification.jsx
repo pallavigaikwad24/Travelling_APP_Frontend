@@ -1,4 +1,4 @@
-import 'C:/Users/PallaviGaikwad/Desktop/Travelling_APP/Travelling_APP_Frontend/travelling_app_react/src/assets/style/emailVerfiy.css';
+import '../../assets/style/emailVerify.css';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';

@@ -5,7 +5,9 @@ const initialState = {
     isHotelList: true,
     searchHotelInfo: null,
     hotelInfo: null,
-    allHotelInfo: null
+    allHotelInfo: null,
+    showForm: false,
+    isSearchRoute: false
 }
 
 const hotelSlice = createSlice({
@@ -14,6 +16,9 @@ const hotelSlice = createSlice({
     reducers: {
         setHotelList: (state, action) => {
             state.hotelList = action.payload
+        },
+        removeHotelList: (state) => {
+            state.hotelList = null
         },
         setIsHotelList: (state) => {
             state.isHotelList = false;
@@ -26,9 +31,19 @@ const hotelSlice = createSlice({
         },
         setAllHotelInfo: (state, action) => {
             state.allHotelInfo = action.payload
-        }
+        },
+        setShowForm: (state) => {
+            state.showForm = true
+        },
+        hideForm: (state) => {
+            state.showForm = false
+        },
+        setIsSearchRoute: (state) => {
+            state.isSearchRoute = true
+        },
     }
 });
 
-export const { setHotelList, setIsHotelList, setSearchHotelInfo, setHotelInfo, setAllHotelInfo } = hotelSlice.actions;
+export const { setHotelList, setIsHotelList, setSearchHotelInfo, setHotelInfo, setAllHotelInfo,
+    removeHotelList, setShowForm, hideForm, setIsSearchRoute } = hotelSlice.actions;
 export default hotelSlice.reducer;
