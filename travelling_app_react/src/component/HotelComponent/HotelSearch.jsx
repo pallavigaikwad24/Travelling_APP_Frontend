@@ -25,7 +25,6 @@ const HotelSearch = () => {
     useEffect(() => {
         axios.get(`${url}/hotel/get-all-hotels`)
             .then((response) => {
-                console.log("Res 14:", response.data);
                 dispatch(setAllHotelInfo(response.data));
             })
             .catch((err) => {

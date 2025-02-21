@@ -14,7 +14,6 @@ const Destinations = () => {
     useEffect(() => {
         axios.get(`${url}/hotel/get-all-hotels`)
             .then((response) => {
-                console.log("Res 14:", response.data);
                 dispatch(setAllHotelInfo(response.data));
             })
             .catch((err) => {
@@ -31,25 +30,44 @@ const Destinations = () => {
             <h2>Featured Hotels</h2>
             <div className="destination-list-home">
 
-                {
-                    allHotelInfo &&
-                    allHotelInfo.map((hotel) => {
-                        if (hotel.ReviewHotelModels.some((review, index) => review.rating === 5 && index <= 2)) {
+                <div className="image-scroller">
+                    <div className="image-track">
+                        {
+                            allHotelInfo &&
+                            allHotelInfo.map((hotel) => {
+                                let maxRating = null;
+                                let maxCount = 0;
 
-                            return <div key={hotel.id} className="destination-card" >
-                                <img src={`${url}/hotelPictures/upload/${hotel?.owner_id}/${hotel.id}/${JSON.parse(hotel?.images)[0]}`} alt={hotel?.name}
-                                    onError={(e) => e.target.src = `${url}/hotelPictures/defaultImg/default_location.png`} />
-                                <h3>{hotel?.name}</h3>
-                                <p>📍{hotel?.country}</p>
-                                <p>
-                                    {[...Array(5)].map((_, index) => (
-                                        <span key={index} style={{ "color": "#e4d05d", "marginLeft": "5px" }}><i className="fa-solid fa-star"></i></span>
-                                    ))}
-                                </p>
-                                <button className="card-button" onClick={() => navigate(`/hotelname/${hotel?.id}`, { state: { hotel } })}>See More</button>
-                            </div>
-                        }
-                    })}
+                                const ratingCounts = hotel.ReviewHotelModels.reduce((acc, rating) => {
+                                    acc[rating.rating] = (acc[rating.rating] || 0) + 1;
+                                    return acc;
+                                }, {});
+
+                                // Find the rating with the highest count for this post
+                                for (const [rating, count] of Object.entries(ratingCounts)) {
+                                    if (count > maxCount) {
+                                        maxCount = count;
+                                        maxRating = rating;
+                                    }
+                                }
+
+                                if (maxRating >= 3 && maxRating <= 5) {
+                                    return <div key={hotel.id} className="destination-card" >
+                                        <img src={`${url}/hotelPictures/upload/${hotel?.owner_id}/${hotel.id}/${JSON.parse(hotel?.images)[0]}`} alt={hotel?.name}
+                                            onError={(e) => e.target.src = `${url}/hotelPictures/defaultImg/default_location.png`} />
+                                        <h3>{hotel?.name}</h3>
+                                        <p>📍{hotel?.country}</p>
+                                        <p>
+                                            {[...Array(Number(maxRating))].map((_, index) => (
+                                                <span key={index} style={{ "color": "#e4d05d", "marginLeft": "5px" }}><i className="fa-solid fa-star"></i></span>
+                                            ))}
+                                        </p>
+                                        <button className="card-button" onClick={() => navigate(`/hotelname/${hotel?.id}`, { state: { hotel } })}>See More</button>
+                                    </div>
+                                }
+                            })}
+                    </div>
+                </div>
             </div>
         </section >
     );

@@ -36,7 +36,7 @@ const EmailVerification = () => {
 
                 <div className="help-section">
                     <p className="help-text">
-                        Need help? <a href="#" className="help-link">Contact Support</a>
+                        Need help? <div className="help-link">Contact Support</div>
                     </p>
                 </div>
             </div>

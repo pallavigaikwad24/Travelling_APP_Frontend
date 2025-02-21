@@ -4,9 +4,9 @@ const Footer = () => {
         <footer className="footer">
             <p>&copy; 2023 Travelista Tours. All rights reserved.</p>
             <ul className="footer-links">
-                <li><a href="#privacy">Privacy Policy</a></li>
-                <li><a href="#terms">Terms of Service</a></li>
-                <li><a href="#contact">Contact Us</a></li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+                <li>Contact Us</li>
             </ul>
         </footer>
     );

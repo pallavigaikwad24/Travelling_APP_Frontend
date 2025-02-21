@@ -45,10 +45,15 @@ const SingleHotel = () => {
     },
     validationSchema,
     onSubmit: (values) => {
+
+      console.log("Values:", values);
+      setIsPayment(true);
+
       axios.post(`${url}/hotel/hotel-booking`, {
         check_in_date: values?.check_in_date,
-        check_out_date: values?.check_out_date, hotel_id:
-          hotelInfo?.id, number_of_rooms: values?.number_of_rooms
+        check_out_date: values?.check_out_date,
+        hotel_id: hotelInfo?.id,
+        number_of_rooms: values?.number_of_rooms
       })
         .then((response) => { console.log("37:", response.data); setIsPayment(true); })
         .catch((err) => {
@@ -179,11 +184,11 @@ const SingleHotel = () => {
                     ) : null}
                   </div>
 
-                  <button type='submit' className='payment-btn' onClick={formik?.handleSubmit}>Book Hotel</button>
+                  <button type='submit' className='payment-btn' onClick={formik?.handleSubmit}>Confirm Booking</button>
 
-                  {isPayment && <Payment amount={hotelInfo?.price_per_night * formik?.values?.number_of_rooms} hotel_id={hotelInfo?.id} check_in_date={formik?.values?.check_in_date}
+                  {isPayment && <Payment setIsPayment={setIsPayment} isPayment={isPayment} amount={hotelInfo?.price_per_night * formik?.values?.number_of_rooms} hotel_id={hotelInfo?.id} check_in_date={formik?.values?.check_in_date}
                     check_out_date={formik?.values?.check_out_date} number_of_rooms={formik?.values?.number_of_rooms}
-                    btnName={"Book Hotel"} onSubmit={formik?.handleSubmit}
+                    btnName={"Book Hotel"}
                   />}
                   <p className="disclaimer">You won't be charged yet</p>
                 </div>

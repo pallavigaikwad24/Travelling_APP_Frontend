@@ -45,16 +45,6 @@ const FlightCard = ({ flight, seats }) => {
     const hours = Math.floor(differenceInMinutes / 60);
     const minutes = Math.floor(differenceInMinutes % 60);
 
-    const handlePayment = () => {
-        axios.post(`${url}/flight/flight-booking`, { flight_id: flight?.id, number_of_seats: seats, })
-            .then((response) => { console.log("43:", response.data); setIsPayment(true) })
-            .catch((err) => {
-                console.log(err);
-                if (err.status == 401) localStorage.removeItem("user_login");
-            });
-
-    }
-
     return (
         <div className="flight-ticket">
             <div className="ticket-container">
@@ -106,10 +96,9 @@ const FlightCard = ({ flight, seats }) => {
 
                     <div className="price">INR{flight.price.toLocaleString()}</div>
                     {
-                        isPayment &&
-                        <Payment amount={flight?.price} price={flight.price} flight_id={flight.id} number_of_seats={seats} btnName={"Book Flight"} />
+                        <Payment setIsPayment={setIsPayment} isPayment={isPayment} amount={flight?.price} flight_id={flight.id} number_of_seats={seats} btnName={"Book Flight"} />
                     }
-                    <button className="view-details" onClick={() => handlePayment()}> Book Flight </button>
+                    {/* <button className="view-details" onClick={() => handlePayment()}> Book Flight </button> */}
                 </div>
             </div>
         </div>

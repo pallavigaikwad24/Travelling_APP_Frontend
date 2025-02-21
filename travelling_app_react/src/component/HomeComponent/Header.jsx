@@ -18,7 +18,8 @@ const Header = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const handleList = () => {
+    const handleList = (e) => {
+        e.preventDefault();
         if (!userInfo) {
             localStorage.removeItem("user_login");
             navigate("/login");
@@ -44,13 +45,13 @@ const Header = () => {
                 <div className="nav-links">
                     {
                         userInfo.user_type == 'superAdmin' &&
-                        <div className="home-tab"><a href="/verify/verification-request"><i className="fa-solid fa-calendar-check"></i>Approval Request</a></div>
+                        <div className="home-tab"><div className="a" onClick={() => navigate("/verify/verification-request")}><i className="fa-solid fa-calendar-check"></i>Approval Request</div></div>
                     }
                     {
                         isOptionSelect == "hotel" && isSearchRoute &&
-                        <div className='home-tab' onClick={handleList}><a href="/home"><i className="fa-solid fa-building"></i>List your property</a></div>
+                        <div className='home-tab'><div className="a" onClick={handleList}><i className="fa-solid fa-building"></i>List your property</div></div>
                     }
-                    <div className="home-tab"><a href="/home"><i className="fa-solid fa-house"  ></i>Home</a></div>
+                    <div className="home-tab"><div className="a" onClick={() => navigate("/home")}><i className="fa-solid fa-house"  ></i>Home</div></div>
                     {/* Profile Dropdown */}
                     <div className="profile-dropdown">
                         <button
@@ -73,10 +74,10 @@ const Header = () => {
                                     <p className="user-email">{userInfo?.email}</p>
                                     <p style={{ 'color': 'purple' }}>{userInfo?.user_type}</p>
                                 </div>
-                                <a href="/profile" className="dropdown-item">
+                                <div className="dropdown-item" onClick={() => navigate("/profile")}>
                                     <i className="fa-solid fa-user"></i>
                                     Profile
-                                </a>
+                                </div>
                                 <div className="dropdown-divider"></div>
                                 <div className="dropdown-item logout" onClick={handleLogout}>
                                     <i className="fa-solid fa-arrow-right-from-bracket"></i>
